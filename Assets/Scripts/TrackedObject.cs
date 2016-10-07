@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TrackedObject : MonoBehaviour {
+public class TrackedObject {
 
     public Vector3 position;
     public bool isCalibrated;
