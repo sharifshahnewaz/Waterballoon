@@ -16,14 +16,14 @@ public class GameController : MonoBehaviour
 	public float waveWait;
     
 	private GameObject head;
-	private GameObject OVRPlayerController;
 	
-	//public GUIText scoreText;
-	//public GUIText restartText;
-	//public GUIText gameOverText;
 
-	
-	private int hit;
+    //public GUIText scoreText;
+    //public GUIText restartText;
+    //public GUIText gameOverText;
+
+
+    private int hit;
 	private int miss;
     public bool play;
     bool isThrowLeft;
@@ -138,6 +138,7 @@ public class GameController : MonoBehaviour
 				
 				if ( leftHandInitPos.isCalibrated && rightHandInitPos.isCalibrated && headInitPos.isCalibrated &&play) {							
 					Instantiate (tennisball, spawnPosition, spawnRotation);
+                   
 					
 				}		
 				yield return new WaitForSeconds (spawnWait);
@@ -167,8 +168,6 @@ public class GameController : MonoBehaviour
 	{
 		
 		long fileId = System.DateTime.Now.Ticks;
-		//TODO remove comments below
-		//System.IO.File.AppendAllText (studyCondition + "-balance-" + fileId.ToString () + ".csv", balanceDataRecorder.ToString ());
-		//System.IO.File.AppendAllText (studyCondition + "-score-" + fileId.ToString () + ".txt", "Hit: " + hit + ", Miss: " + miss);
+		
 	}
 }
