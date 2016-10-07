@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Water Balloon Vive.CSharp", "Water Balloon Vive.CSharp.csproj", "{3972836B-CA57-EE83-B875-9C53D2436663}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Water Balloon Vive.CSharp.Editor", "Water Balloon Vive.CSharp.Editor.csproj", "{3C8EB708-1738-DBF9-691F-4E6FBAB57E66}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3972836B-CA57-EE83-B875-9C53D2436663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3972836B-CA57-EE83-B875-9C53D2436663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3972836B-CA57-EE83-B875-9C53D2436663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3972836B-CA57-EE83-B875-9C53D2436663}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C8EB708-1738-DBF9-691F-4E6FBAB57E66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C8EB708-1738-DBF9-691F-4E6FBAB57E66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C8EB708-1738-DBF9-691F-4E6FBAB57E66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C8EB708-1738-DBF9-691F-4E6FBAB57E66}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
