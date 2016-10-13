@@ -6,17 +6,16 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 
-public class GameController : MonoBehaviour
-{
-	public GameObject tennisball;
-	
-	public int hazardCount;
-	public float spawnWait;
-	public float startWait;
-	public float waveWait;
-    
-	private GameObject head;
-	
+public class GameController : MonoBehaviour {
+    public GameObject tennisball;
+
+    public int hazardCount;
+    public float spawnWait;
+    public float startWait;
+    public float waveWait;
+
+    private GameObject head;
+
 
     //public GUIText scoreText;
     //public GUIText restartText;
@@ -24,150 +23,164 @@ public class GameController : MonoBehaviour
 
 
     private int hit;
-	private int miss;
-    public bool play;
+    private int miss;
+    public bool Play { get; set; }
+    public bool LeftCalibrated { get; set; }
+    public bool RightCalibrated { get; set; }
+    public bool HeadCalibrated { get; set; }
+
+
     bool isThrowLeft;
 
-    TrackedObject headInitPos, leftHandInitPos, rightHandInitPos, leftHandPos, rightHandPos;
+
+    Vector3 headInitPos, leftHandInitPos, rightHandInitPos, leftHandPos, rightHandPos, headPos;
     Vector3 target;
 
     public int totalBall = 120;
 
-	private string displayMessage = null;
-	private StringBuilder balanceDataRecorder;
+    private string displayMessage = null;
+    private StringBuilder balanceDataRecorder;
 
-	
-	
-	public int sampleRate = 10;	
-	public String studyCondition;
-	
-	public GameObject hitText;
-	public GameObject missText;
-	public GameObject messageText;
-   
-	void Start ()
-	{
-		play = false;
-       
-		hit = 0;
-		miss = 0;
 
-        head = GameObject.FindWithTag ("MainCamera");
 
-		if (head == null) {
-			Debug.Log ("Cannot find 'Head' of the avatar");
-		}
-		
-		displayMessage = "'P' to \nplay";
+    public int sampleRate = 10;
+    public String studyCondition;
 
-        headInitPos = new TrackedObject ( );
-        leftHandInitPos = new TrackedObject ( );
-        rightHandInitPos = new TrackedObject ( );
-        leftHandPos = new TrackedObject ( );
-        rightHandPos = new TrackedObject ( );
+    public GameObject hitText;
+    public GameObject missText;
+    public GameObject messageText;
 
-        StartCoroutine (SpawnWaves ());
-		
-	}
-	
-	void Update ()
-	{
-		
-		if (Input.GetKeyDown (KeyCode.P)) {
-			if (play) {
-				play = false;				
-				displayMessage = "'P' to \nplay";
-			} else {
-				play = true;
-				displayMessage = "'P' to \nstop";
-			}
-			
-		}
+    void Start ( ) {
+        Play = true;
+
+        hit = 0;
+        miss = 0;
+
+        head = GameObject.FindWithTag ( "MainCamera" );
+
+        if ( head == null ) {
+            Debug.Log ( "Cannot find 'Head' of the avatar" );
+        }
+
+        displayMessage = "'P' to \nplay";
+
+        headInitPos = Vector3.zero;
+        leftHandInitPos = Vector3.zero;
+        rightHandInitPos = Vector3.zero;
+        leftHandPos = Vector3.zero;
+        rightHandPos = Vector3.zero;
+        headPos = Vector3.zero;
+
+        StartCoroutine ( SpawnWaves ( ) );
+
+    }
+
+    void Update ( ) {
+
+        if ( Input.GetKeyDown ( KeyCode.P ) ) {
+            if ( Play ) {
+                Play = false;
+                displayMessage = "'P' to \nplay";
+            } else {
+                Play = true;
+                displayMessage = "'P' to \nstop";
+            }
+
+        }
 
         if ( Input.GetKeyDown ( KeyCode.L ) ) {
-            leftHandInitPos.position = GameObject.FindWithTag ( "LeftHand" ).transform.position;
-            leftHandInitPos.isCalibrated = true;
-            leftHandPos = leftHandInitPos;
-            Debug.Log ( "Left hand calibrated");
+            CalibrateLeft ( );
         }
         if ( Input.GetKeyDown ( KeyCode.R ) ) {
-            rightHandInitPos.position = GameObject.FindWithTag ( "RightHand" ).transform.position;
-            rightHandInitPos.isCalibrated = true;
-            rightHandPos = rightHandInitPos;
-            Debug.Log ( "Right hand calibrated" );
-       
-    }
+            CalibrateRighft ( );
+
+        }
         if ( Input.GetKeyDown ( KeyCode.H ) ) {
-            headInitPos.position = GameObject.FindWithTag ( "MainCamera" ).transform.position;
-            headInitPos.isCalibrated = true;
-          Debug.Log ( "Head hand calibrated");
-     
+            CalibrateHead ( );
+
         }
 
 
-        if (hit + miss >= totalBall) {
-			play = false;
-			displayMessage = "Game\nOver";
-		}
-		hitText.GetComponent <TextMesh> ().text = "Hit: " + hit;
-		missText.GetComponent <TextMesh> ().text = "Miss: " + miss;
-		messageText.GetComponent <TextMesh> ().text = displayMessage;
-		
-	}
+        if ( hit + miss >= totalBall ) {
+            Play = false;
+            displayMessage = "Game\nOver";
+        }
+        hitText.GetComponent<TextMesh> ( ).text = "Hit: " + hit;
+        missText.GetComponent<TextMesh> ( ).text = "Miss: " + miss;
+        messageText.GetComponent<TextMesh> ( ).text = displayMessage;
 
-	IEnumerator SpawnWaves ()
-	{
-		yield return new WaitForSeconds (startWait);
-	
-		while (true) {
-            Debug.Log ( "Starting to throw object");
-			for (int i = 0; i < hazardCount; i++) {
-				GameObject bowlingMachineHead = GameObject.FindGameObjectsWithTag ("BowlingMachineHead") [0];
-				Vector3 spawnPosition = new Vector3 (bowlingMachineHead.transform.position.x, 
-								bowlingMachineHead.transform.position.y+0.1f, bowlingMachineHead.transform.position.z-0.5f);
-                //Debug.Log ( bowlingMachineHead.transform.position );
-				Quaternion spawnRotation = Quaternion.identity;
-                if ( isThrowLeft ) {
-                    target = leftHandPos.position;
-                    isThrowLeft = false;
-                } else {
-                    target = rightHandPos.position;
-                    isThrowLeft = true;
+    }
+
+    IEnumerator SpawnWaves ( ) {
+        yield return new WaitForSeconds ( startWait );
+
+        GameObject bowlingMachineHead = GameObject.FindGameObjectsWithTag ( "BowlingMachineHead" )[0];
+        Vector3 spawnPosition = new Vector3 ( bowlingMachineHead.transform.position.x,
+                        bowlingMachineHead.transform.position.y + 0.1f, bowlingMachineHead.transform.position.z - 0.5f );
+        Quaternion spawnRotation = Quaternion.identity;
+
+        while ( true ) {
+            for ( int i = 0; i < hazardCount; i++ ) {
+                if ( LeftCalibrated && RightCalibrated /*&& HeadCalibrated*/ && Play ) {
+
+                    if ( isThrowLeft ) {
+                        target = leftHandPos;
+                        target.x += distanceAdjustment ( );
+                        isThrowLeft = false;
+                    } else {
+                        target = rightHandPos;
+                        target.x += distanceAdjustment ( );
+                        isThrowLeft = true;
+                    }
+                    spawnRotation = Quaternion.LookRotation ( spawnPosition - target - new Vector3 ( 0, 0, 0.10f ) );
+                    Instantiate ( tennisball, spawnPosition, spawnRotation );
                 }
-				spawnRotation = Quaternion.LookRotation (spawnPosition - target - new Vector3 (0, 0, 0.10f));
-				
-				if ( leftHandInitPos.isCalibrated && rightHandInitPos.isCalibrated && headInitPos.isCalibrated &&play) {							
-					Instantiate (tennisball, spawnPosition, spawnRotation);
-                   
-					
-				}		
-				yield return new WaitForSeconds (spawnWait);
-			}
-			
-			yield return new WaitForSeconds (waveWait);
-			
-							
-						
-		}
-	}
-   
-	
-	public void AddHit ()
-	{
-		hit += 1;
-		//UpdateScore ();
-	}
-	public void AddMiss ()
-	{
-		miss += 1;
-		//UpdateScore ();
-	}
-		
-		
-	void OnApplicationQuit ()
-	{
-		
-		long fileId = System.DateTime.Now.Ticks;
-		
-	}
+                yield return new WaitForSeconds ( spawnWait );
+            }
+
+            yield return new WaitForSeconds ( waveWait );
+
+
+
+        }
+    }
+
+    private float distanceAdjustment ( ) {
+        return UnityEngine.Random.Range ( -0.5f, 0.5f );
+    }
+
+    public bool Calibrate ( out Vector3 handInitPos, String tag, out Vector3 hanPos ) {
+        handInitPos = GameObject.FindWithTag ( tag ).transform.position;
+        hanPos = handInitPos;
+        Debug.Log ( tag + " calibrated" );
+        return true;
+    }
+
+    public void CalibrateLeft ( ) {
+        LeftCalibrated = Calibrate ( out leftHandInitPos, "LeftHand", out leftHandPos );
+    }
+
+    public void CalibrateRighft ( ) {
+        RightCalibrated = Calibrate ( out rightHandInitPos, "RightHand", out rightHandPos );
+    }
+
+    public void CalibrateHead ( ) {
+        HeadCalibrated = Calibrate ( out headInitPos, "MainCamera", out headPos );
+    }
+
+    public void AddHit ( ) {
+        hit += 1;
+        //UpdateScore ();
+    }
+    public void AddMiss ( ) {
+        miss += 1;
+        //UpdateScore ();
+    }
+
+
+    void OnApplicationQuit ( ) {
+
+        long fileId = System.DateTime.Now.Ticks;
+
+    }
 }
