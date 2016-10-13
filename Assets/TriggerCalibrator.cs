@@ -10,6 +10,7 @@ public class TriggerCalibrator : MonoBehaviour {
     void Start ( ) {
         device = GetComponent<SteamVR_TrackedController> ( );
         device.TriggerClicked += Trigger;
+        device.Gripped += Gripped;
         GameObject gameControllerObject = GameObject.FindWithTag ( "GameController" );
         if ( gameControllerObject != null ) {
             gameController = gameControllerObject.GetComponent<GameController> ( );
@@ -24,6 +25,11 @@ public class TriggerCalibrator : MonoBehaviour {
             gameController.CalibrateLeft ( );
         } else if ( !isLeft && !gameController.RightCalibrated ) {
             gameController.CalibrateRighft ( );
+        }
+    }
+    void Gripped ( object sender, ClickedEventArgs e ) {
+        if (  !gameController.HeadCalibrated ) {
+            gameController.CalibrateHead ( );
         }
     }
 }

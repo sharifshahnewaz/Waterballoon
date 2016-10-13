@@ -31,7 +31,8 @@ public class GameController : MonoBehaviour {
 
 
     bool isThrowLeft;
-
+    int leftHit, leftMiss, rightHit, rightMiss;
+    float leftPercentage, rightPercentage;
 
     Vector3 headInitPos, leftHandInitPos, rightHandInitPos, leftHandPos, rightHandPos, headPos;
     Vector3 target;
@@ -72,6 +73,8 @@ public class GameController : MonoBehaviour {
         headPos = Vector3.zero;
 
         StartCoroutine ( SpawnWaves ( ) );
+        leftPercentage = 0.90f;
+        rightPercentage = 0.90f;
 
     }
 
@@ -105,8 +108,8 @@ public class GameController : MonoBehaviour {
             Play = false;
             displayMessage = "Game\nOver";
         }
-        hitText.GetComponent<TextMesh> ( ).text = "Hit: " + hit;
-        missText.GetComponent<TextMesh> ( ).text = "Miss: " + miss;
+        hitText.GetComponent<TextMesh> ( ).text = "Smashed: " + hit+ " R: ("+rightPercentage+")";
+        missText.GetComponent<TextMesh> ( ).text = "Missed: " + miss + " L: (" + leftPercentage + ")";
         messageText.GetComponent<TextMesh> ( ).text = displayMessage;
 
     }
@@ -121,19 +124,20 @@ public class GameController : MonoBehaviour {
 
         while ( true ) {
             for ( int i = 0; i < hazardCount; i++ ) {
-                if ( LeftCalibrated && RightCalibrated /*&& HeadCalibrated*/ && Play ) {
+                if ( LeftCalibrated && RightCalibrated && HeadCalibrated && Play ) {
 
                     if ( isThrowLeft ) {
                         target = leftHandPos;
-                        target.x += distanceAdjustment ( );
-                        isThrowLeft = false;
+                        target.x = leftDistanceAdjustment ( );
+                        
                     } else {
                         target = rightHandPos;
-                        target.x += distanceAdjustment ( );
-                        isThrowLeft = true;
+                        target.x = rightDistanceAdjustment ( );
+                        
                     }
                     spawnRotation = Quaternion.LookRotation ( spawnPosition - target - new Vector3 ( 0, 0, 0.10f ) );
                     Instantiate ( tennisball, spawnPosition, spawnRotation );
+                    isThrowLeft = !isThrowLeft;
                 }
                 yield return new WaitForSeconds ( spawnWait );
             }
@@ -145,8 +149,26 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    private float distanceAdjustment ( ) {
-        return UnityEngine.Random.Range ( -0.5f, 0.5f );
+    private float leftDistanceAdjustment ( ) {
+        if ( leftHit >= 2 ) {
+            leftHit = leftMiss = 0;
+            leftPercentage += 0.1f;
+        } else if ( leftMiss >= 2 ) {
+            leftHit = leftMiss = 0;
+            leftPercentage -= 0.1f;
+        }
+        return headPos.x - Vector3.Distance ( headPos, leftHandPos ) * leftPercentage;
+    }
+
+    private float rightDistanceAdjustment ( ) {
+        if ( rightHit >= 2 ) {
+            rightHit = rightMiss = 0;
+            rightPercentage += 0.1f;
+        } else if ( rightMiss >= 2 ) {
+            rightHit = rightMiss = 0;
+            rightPercentage -= 0.1f;
+        }
+        return headPos.x + Vector3.Distance ( rightHandPos, headPos ) * rightPercentage;
     }
 
     public bool Calibrate ( out Vector3 handInitPos, String tag, out Vector3 hanPos ) {
@@ -168,13 +190,21 @@ public class GameController : MonoBehaviour {
         HeadCalibrated = Calibrate ( out headInitPos, "MainCamera", out headPos );
     }
 
-    public void AddHit ( ) {
+    public void AddHit () {
         hit += 1;
-        //UpdateScore ();
+        //the next one will be thrown left. This was one right
+        if ( isThrowLeft )
+            rightHit++;
+        else
+            leftHit++;
+
     }
     public void AddMiss ( ) {
         miss += 1;
-        //UpdateScore ();
+        if ( isThrowLeft )
+            rightMiss++;
+        else
+            leftMiss++;
     }
 
 

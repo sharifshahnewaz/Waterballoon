@@ -31,18 +31,19 @@ public class DestroyByContact : MonoBehaviour {
         if ( other.tag == "Boundary" ) {
             gameController.AddMiss ( );
             AudioSource ballShooting = GameObject.Find ( "BallShooting" ).GetComponent<AudioSource> ( );
-            ballShooting.pitch = 0.6f;
-            ballShooting.volume = 0.03f;
+         // ballShooting.pitch = 0.6f;
+           // ballShooting.volume = 0.03f;
             ballShooting.Play ( );
             Destroy ( gameObject );
             //return;
         } else if ( other.tag == "LeftHand" ) {
             leftCatch = true;
+            gameController.AddHit();
         } else if ( other.tag == "RightHand" ) {
             rightCatch = true;
+            gameController.AddHit ();
         }
         if ( leftCatch || rightCatch ) {
-
             gameController.Play = false;
             GetComponent<Rigidbody> ( ).velocity = Vector3.zero;
             GetComponent<Rigidbody> ( ).angularVelocity = Vector3.zero;
@@ -57,6 +58,7 @@ public class DestroyByContact : MonoBehaviour {
         }
         if ( !gameController.Play && Math.Abs ( Vector3.Distance ( leftController.transform.position, rightController.transform.position ) ) < 0.1f ) {
             gameController.Play = true;
+            
             leftCatch = rightCatch = false;
             Destroy ( gameObject );
         }
