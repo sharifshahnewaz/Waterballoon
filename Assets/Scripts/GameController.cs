@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour {
     public float startWait;
     public float waveWait;
 
+    Animation anim;
+
     private GameObject head;
 
 
@@ -76,6 +78,8 @@ public class GameController : MonoBehaviour {
         leftPercentage = 0.90f;
         rightPercentage = 0.90f;
 
+        anim = GameObject.Find ( "Jim" ).GetComponent<Animation> ( );
+
     }
 
     void Update ( ) {
@@ -136,6 +140,8 @@ public class GameController : MonoBehaviour {
                         
                     }
                     spawnRotation = Quaternion.LookRotation ( spawnPosition - target - new Vector3 ( 0, 0, 0.10f ) );
+                    anim.Play ( );
+                    yield return new WaitForSeconds ( 0.8f );
                     Instantiate ( tennisball, spawnPosition, spawnRotation );
                     isThrowLeft = !isThrowLeft;
                 }
