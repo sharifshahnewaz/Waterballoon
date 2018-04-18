@@ -123,6 +123,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 		if (connected)
 		{
 			UpdateModel();
+
 		}
 	}
 
@@ -262,6 +263,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 
 		bool success = SetModel(renderModelName);
 		SteamVR_Utils.Event.Send("render_model_loaded", this, success);
+		SteamVR_Utils.Event.Send("hide_render_models", true);
 	}
 
 	private bool SetModel(string renderModelName)
@@ -364,7 +366,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 		mesh.uv = uv;
 		mesh.triangles = triangles;
 
-		mesh.Optimize();
+		;
 		//mesh.hideFlags = HideFlags.DontUnloadUnusedAsset;
 
 		// Check cache before loading texture.
@@ -699,7 +701,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 				child.localPosition = componentTransform.pos;
 				child.localRotation = componentTransform.rot;
 
-				var attach = child.FindChild(k_localTransformName);
+				var attach = child.Find(k_localTransformName);
 				if (attach != null)
 				{
 					var attachTransform = new SteamVR_Utils.RigidTransform(componentState.mTrackingToComponentLocal);
