@@ -46,7 +46,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\RenderToCubeMap.cs" />
      <Compile Include="Assets\Scripts\BallRotation.cs" />
      <Compile Include="Assets\Scripts\DestroyByBounday.cs" />
      <Compile Include="Assets\Scripts\DestroyByContact.cs" />
@@ -54,10 +53,13 @@
      <Compile Include="Assets\Scripts\DisableOnStart.cs" />
      <Compile Include="Assets\Scripts\Drawlines.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
+     <Compile Include="Assets\Scripts\LeftHandController.cs" />
      <Compile Include="Assets\Scripts\Mover.cs" />
      <Compile Include="Assets\Scripts\PlayerControler.cs" />
      <Compile Include="Assets\Scripts\RandomRoate.cs" />
+     <Compile Include="Assets\Scripts\RightHandController.cs" />
      <Compile Include="Assets\Scripts\TrackedObject.cs" />
+     <Compile Include="Assets\Scripts\TriggerCalibrator.cs" />
      <Compile Include="Assets\Scripts\UIVA_Client_WiiFit.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_GazeTracker.cs" />
      <Compile Include="Assets\SteamVR\Extras\SteamVR_LaserPointer.cs" />
@@ -94,7 +96,6 @@
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_TrackedObject.cs" />
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_UpdatePoses.cs" />
      <Compile Include="Assets\SteamVR\Scripts\SteamVR_Utils.cs" />
-     <Compile Include="Assets\TriggerCalibrator.cs" />
      <None Include="Assets\Plugins\donotdelete.txt" />
      <None Include="Assets\SteamVR\Resources\SteamVR_Fade.shader" />
      <None Include="Assets\SteamVR\Resources\SteamVR_ClearAll.shader" />
