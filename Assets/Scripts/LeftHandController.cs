@@ -5,7 +5,7 @@ using UnityEngine;
 public class LeftHandController : MonoBehaviour
 {
 	GameObject leftHand;
-	public float xPos;
+	private float xPos, initX, currentX;
 	private GameController gameController;
 	// Use this for initialization
 	void Start ()
@@ -24,8 +24,10 @@ public class LeftHandController : MonoBehaviour
 	{
 		leftHand = GameObject.FindGameObjectWithTag ("LeftController");
 		if (leftHand != null) {
-			if (gameController.HeadCalibrated) {
-				xPos = gameController.headInitPos.x + (leftHand.transform.position.x - gameController.headInitPos.x) * gameController.scale;
+			initX = gameController.leftHandInitPos.x;
+			currentX = leftHand.transform.position.x;
+			if (gameController.HeadCalibrated && currentX < initX) {
+				xPos = initX + (currentX - initX) * gameController.scale;
 			} else {
 				xPos = leftHand.transform.position.x;
 			}
@@ -33,8 +35,7 @@ public class LeftHandController : MonoBehaviour
 			this.transform.eulerAngles = new Vector3 (
 				leftHand.transform.rotation.eulerAngles.x,
 				leftHand.transform.rotation.eulerAngles.y,
-				leftHand.transform.rotation.eulerAngles.z); // rotate around z axis to match the hand
-
+				leftHand.transform.rotation.eulerAngles.z);
 		}
 	}
 }

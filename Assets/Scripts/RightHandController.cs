@@ -5,7 +5,7 @@ using UnityEngine;
 public class RightHandController : MonoBehaviour
 {
 	GameObject rightHand;
-	public float xPos;
+	private float xPos, initX, currentX;
 	private GameController gameController;
 	// Use this for initialization
 	void Start ()
@@ -24,8 +24,10 @@ public class RightHandController : MonoBehaviour
 	{
 		rightHand = GameObject.FindGameObjectWithTag ("RightController");
 		if (rightHand != null) {
-			if (gameController.HeadCalibrated) {
-				xPos = gameController.headInitPos.x + (rightHand.transform.position.x - gameController.headInitPos.x) * gameController.scale;
+			initX = gameController.rightHandInitPos.x;
+			currentX = rightHand.transform.position.x;
+			if (gameController.HeadCalibrated && currentX > initX) {
+				xPos = initX + (currentX - initX) * gameController.scale;
 			} else {
 				xPos = rightHand.transform.position.x;
 			}
