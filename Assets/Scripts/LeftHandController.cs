@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class LeftHandController : MonoBehaviour
 {
-	GameObject leftHand;
-	private float xPos, initX, currentX;
+	GameObject leftController;
+	private float xPos, initX, currentX, maxX;
 	private GameController gameController;
 	// Use this for initialization
 	void Start ()
@@ -22,20 +22,24 @@ public class LeftHandController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		leftHand = GameObject.FindGameObjectWithTag ("LeftController");
-		if (leftHand != null) {
+		leftController = GameObject.FindGameObjectWithTag ("LeftController");
+		if (leftController != null) {
 			initX = gameController.leftHandInitPos.x;
-			currentX = leftHand.transform.position.x;
+			currentX = leftController.transform.position.x;
 			if (gameController.HeadCalibrated && currentX < initX) {
 				xPos = initX + (currentX - initX) * gameController.scale;
+				if (currentX > maxX) {
+					maxX = currentX;
+					Debug.Log ("Left max "+maxX);
+				}
 			} else {
-				xPos = leftHand.transform.position.x;
+				xPos = leftController.transform.position.x;
 			}
-			this.transform.position = new Vector3 (xPos, leftHand.transform.position.y, leftHand.transform.position.z);
+			this.transform.position = new Vector3 (xPos, leftController.transform.position.y, leftController.transform.position.z);
 			this.transform.eulerAngles = new Vector3 (
-				leftHand.transform.rotation.eulerAngles.x,
-				leftHand.transform.rotation.eulerAngles.y,
-				leftHand.transform.rotation.eulerAngles.z);
+				leftController.transform.rotation.eulerAngles.x,
+				leftController.transform.rotation.eulerAngles.y,
+				leftController.transform.rotation.eulerAngles.z);
 		}
 	}
 }

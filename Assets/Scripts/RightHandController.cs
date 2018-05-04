@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class RightHandController : MonoBehaviour
 {
-	GameObject rightHand;
-	private float xPos, initX, currentX;
+	GameObject rightController;
+	private float xPos, initX, currentX, maxX;
 	private GameController gameController;
 	// Use this for initialization
 	void Start ()
@@ -22,20 +22,24 @@ public class RightHandController : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{
-		rightHand = GameObject.FindGameObjectWithTag ("RightController");
-		if (rightHand != null) {
+		rightController = GameObject.FindGameObjectWithTag ("RightController");
+		if (rightController != null) {
 			initX = gameController.rightHandInitPos.x;
-			currentX = rightHand.transform.position.x;
+			currentX = rightController.transform.position.x;
 			if (gameController.HeadCalibrated && currentX > initX) {
 				xPos = initX + (currentX - initX) * gameController.scale;
+				if (currentX < maxX) {
+					maxX = currentX;
+					Debug.Log ("Right max "+maxX);
+				}
 			} else {
-				xPos = rightHand.transform.position.x;
+				xPos = rightController.transform.position.x;
 			}
-			this.transform.position = new Vector3 (xPos, rightHand.transform.position.y, rightHand.transform.position.z);
+			this.transform.position = new Vector3 (xPos, rightController.transform.position.y, rightController.transform.position.z);
 			this.transform.eulerAngles = new Vector3 (
-				rightHand.transform.rotation.eulerAngles.x,
-				rightHand.transform.rotation.eulerAngles.y,
-				rightHand.transform.rotation.eulerAngles.z + 180.0f); // rotate around z axis to match the hand
+				rightController.transform.rotation.eulerAngles.x,
+				rightController.transform.rotation.eulerAngles.y,
+				rightController.transform.rotation.eulerAngles.z + 180.0f); // rotate around z axis to match the hand
 			
 		}
 	}

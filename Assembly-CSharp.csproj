@@ -53,11 +53,11 @@
      <Compile Include="Assets\Scripts\DisableOnStart.cs" />
      <Compile Include="Assets\Scripts\Drawlines.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
-     <Compile Include="Assets\Scripts\HandController.cs" />
      <Compile Include="Assets\Scripts\LeftHandController.cs" />
      <Compile Include="Assets\Scripts\Mover.cs" />
      <Compile Include="Assets\Scripts\PlayerControler.cs" />
      <Compile Include="Assets\Scripts\RandomRoate.cs" />
+     <Compile Include="Assets\Scripts\ReachRecorder.cs" />
      <Compile Include="Assets\Scripts\RightHandController.cs" />
      <Compile Include="Assets\Scripts\TrackedObject.cs" />
      <Compile Include="Assets\Scripts\TriggerCalibrator.cs" />

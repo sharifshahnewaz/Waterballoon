@@ -8,6 +8,7 @@ using System.Net;
 
 public class GameController : MonoBehaviour
 {
+	public bool isDebug = false;
 	public GameObject tennisball;
 
 	public int hazardCount;
@@ -37,7 +38,7 @@ public class GameController : MonoBehaviour
 
 	public bool HeadCalibrated { get; set; }
 
-
+	private ReachRecorder reachRecorder;
 	bool isThrowLeft;
 	int leftHit, leftMiss, rightHit, rightMiss;
 	float leftPercentage, rightPercentage;
@@ -61,7 +62,7 @@ public class GameController : MonoBehaviour
 
 	void Start ()
 	{
-		Play = true;
+		Play = false;
 
 		hit = 0;
 		miss = 0;
@@ -86,7 +87,10 @@ public class GameController : MonoBehaviour
 		rightPercentage = 0.90f;
 
 		anim = GameObject.Find ("Jim").GetComponent<Animation> ();
-
+		reachRecorder = GetComponent<ReachRecorder> ();
+		if (reachRecorder != null) {
+			Debug.Log ("found it");
+		}
 	}
 
 	void Update ()
@@ -96,32 +100,48 @@ public class GameController : MonoBehaviour
 			if (Play) {
 				Play = false;
 				displayMessage = "'P' to \nplay";
+				Debug.Log ("Play stopped");
 			} else {
 				Play = true;
 				displayMessage = "'P' to \nstop";
+				Debug.Log ("Play started");
 			}
 
 		}
 
-		if (Input.GetKeyDown (KeyCode.L)) {
+		/*if (Input.GetKeyDown (KeyCode.L)) {
 			CalibrateLeft ();
 		}
 		if (Input.GetKeyDown (KeyCode.R)) {
-			CalibrateRighft ();
-
+			CalibrateRight ();
 		}
 		if (Input.GetKeyDown (KeyCode.H)) {
 			CalibrateHead ();
 
+		}*/
+
+		if (Input.GetKeyDown (KeyCode.C)) {
+			CalibrateLeft ();
+			CalibrateRight ();
+			CalibrateHead ();
 		}
 
+		if (Input.GetKeyDown (KeyCode.S)) {
+			reachRecorder.StartRecording (leftHandInitPos.x,rightHandInitPos.x);
+		}
+
+		if (Input.GetKeyDown (KeyCode.W)) {
+			reachRecorder.WriteInFile ();
+
+		}
 
 		if (hit + miss >= totalBall) {
 			Play = false;
 			displayMessage = "Game\nOver";
 		}
-		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit;   // + " R: ("+rightPercentage+")";
-		missText.GetComponent<TextMesh> ().text = "Missed: " + miss;// + " L: (" + leftPercentage + ")";
+			
+		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit + " R: (" + rightPercentage + ")";
+		missText.GetComponent<TextMesh> ().text = "Missed: " + miss + " L: (" + leftPercentage + ")";
 		messageText.GetComponent<TextMesh> ().text = displayMessage;
 
 	}
@@ -142,11 +162,10 @@ public class GameController : MonoBehaviour
 					if (isThrowLeft) {
 						target = leftHandPos;
 						target.x = leftDistanceAdjustment ();
-                        
+						                        
 					} else {
 						target = rightHandPos;
-						target.x = rightDistanceAdjustment ();
-                        
+						target.x = rightDistanceAdjustment ();						                        
 					}
 					spawnRotation = Quaternion.LookRotation (spawnPosition - target - new Vector3 (0, 0, 0.10f));
 					anim.Play ();
@@ -156,11 +175,7 @@ public class GameController : MonoBehaviour
 				}
 				yield return new WaitForSeconds (spawnWait);
 			}
-
 			yield return new WaitForSeconds (waveWait);
-
-
-
 		}
 	}
 
@@ -173,7 +188,7 @@ public class GameController : MonoBehaviour
 			leftHit = leftMiss = 0;
 			leftPercentage -= 0.1f;
 		}
-		return headPos.x - Vector3.Distance (headPos, leftHandPos) * leftPercentage;
+		return headInitPos.x - Vector3.Distance (headInitPos, leftHandPos) * leftPercentage;
 	}
 
 	private float rightDistanceAdjustment ()
@@ -181,11 +196,11 @@ public class GameController : MonoBehaviour
 		if (rightHit >= 2) {
 			rightHit = rightMiss = 0;
 			rightPercentage += 0.1f;
-		} else if (rightMiss >= 2) {
+		} else if (rightMiss >= 2 && rightPercentage > 0.9f) {
 			rightHit = rightMiss = 0;
 			rightPercentage -= 0.1f;
 		}
-		return headPos.x + Vector3.Distance (rightHandPos, headPos) * rightPercentage;
+		return headInitPos.x + Vector3.Distance (rightHandPos, headInitPos) * rightPercentage;
 	}
 
 	public bool Calibrate (out Vector3 handInitPos, String tag, out Vector3 hanPos)
@@ -201,7 +216,7 @@ public class GameController : MonoBehaviour
 		LeftCalibrated = Calibrate (out leftHandInitPos, "LeftController", out leftHandPos);
 	}
 
-	public void CalibrateRighft ()
+	public void CalibrateRight ()
 	{
 		RightCalibrated = Calibrate (out rightHandInitPos, "RightController", out rightHandPos);
 	}
@@ -209,6 +224,7 @@ public class GameController : MonoBehaviour
 	public void CalibrateHead ()
 	{
 		HeadCalibrated = Calibrate (out headInitPos, "MainCamera", out headPos);
+		reachRecorder.StartRecording (leftHandInitPos.x,rightHandInitPos.x); //temp code
 	}
 
 	public void AddHit ()
@@ -234,8 +250,6 @@ public class GameController : MonoBehaviour
 
 	void OnApplicationQuit ()
 	{
-
 		long fileId = System.DateTime.Now.Ticks;
-
 	}
 }
