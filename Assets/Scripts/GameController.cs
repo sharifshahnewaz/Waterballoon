@@ -38,7 +38,6 @@ public class GameController : MonoBehaviour
 
 	public bool HeadCalibrated { get; set; }
 
-	private ReachRecorder reachRecorder;
 	bool isThrowLeft;
 	int leftHit, leftMiss, rightHit, rightMiss;
 	float leftPercentage, rightPercentage;
@@ -87,10 +86,6 @@ public class GameController : MonoBehaviour
 		rightPercentage = 0.90f;
 
 		anim = GameObject.Find ("Jim").GetComponent<Animation> ();
-		reachRecorder = GetComponent<ReachRecorder> ();
-		if (reachRecorder != null) {
-			Debug.Log ("found it");
-		}
 	}
 
 	void Update ()
@@ -124,15 +119,6 @@ public class GameController : MonoBehaviour
 			CalibrateLeft ();
 			CalibrateRight ();
 			CalibrateHead ();
-		}
-
-		if (Input.GetKeyDown (KeyCode.S)) {
-			reachRecorder.StartRecording (leftHandInitPos.x,rightHandInitPos.x);
-		}
-
-		if (Input.GetKeyDown (KeyCode.W)) {
-			reachRecorder.WriteInFile ();
-
 		}
 
 		if (hit + miss >= totalBall) {
@@ -224,7 +210,6 @@ public class GameController : MonoBehaviour
 	public void CalibrateHead ()
 	{
 		HeadCalibrated = Calibrate (out headInitPos, "MainCamera", out headPos);
-		reachRecorder.StartRecording (leftHandInitPos.x,rightHandInitPos.x); //temp code
 	}
 
 	public void AddHit ()

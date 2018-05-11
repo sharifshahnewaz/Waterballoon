@@ -9,16 +9,31 @@ public class ReachRecorder : MonoBehaviour
 	float leftInt, rightInt, leftCurrent, rightCurrent, leftMax, rightMax;
 	bool recording = false;
 	GameObject leftController, rightController;
+	private GameController gameController;
 	StringBuilder sb;
 
 	void Start ()
 	{
-		
+		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
+		if (gameControllerObject != null) {
+			gameController = gameControllerObject.GetComponent<GameController> ();
+		}
+		if (gameController == null) {
+			Debug.Log ("Cannot find 'GameController' script");
+		}
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{		
+		if (Input.GetKeyDown (KeyCode.R)) {
+			if (gameController.LeftCalibrated && gameController.RightCalibrated && gameController.HeadCalibrated) {
+				this.leftInt = gameController.leftHandInitPos.x;
+				this.rightInt = gameController.rightHandInitPos.x;
+				recording = true;
+			}
+		}
+
 		if (recording) {
 			leftController = GameObject.FindGameObjectWithTag ("LeftController");
 			if (leftController != null) {
@@ -35,18 +50,16 @@ public class ReachRecorder : MonoBehaviour
 					rightMax = rightCurrent;
 				}
 			}
-		}		
-	}
+		}
 
-	public void StartRecording (float leftInt, float rightInt)
-	{
-		this.leftInt = leftInt;
-		this.rightInt = rightInt;
-		recording = true;
+		/*if (Input.GetKeyDown (KeyCode.W)) {
+			WriteInFile ();
+		}*/
 	}
-
-	public void WriteInFile ()
+		
+	void OnApplicationQuit ()
 	{
+		recording = false;
 		sb = new StringBuilder ();
 		float midPoint = leftInt + (rightInt - leftInt) / 2;
 		sb.Append ("Left Init, Left Max, Left Init Length, Left Max Length, Left Reach," +

@@ -41,10 +41,8 @@ public class DestroyByContact : MonoBehaviour
 			//return;
 		} else if (other.tag == "LeftHand") {
 			leftCatch = true;
-			gameController.AddHit ();
 		} else if (other.tag == "RightHand") {
 			rightCatch = true;
-			gameController.AddHit ();
 		}
 		if (leftCatch || rightCatch) {
 			gameController.Play = false;
@@ -64,7 +62,8 @@ public class DestroyByContact : MonoBehaviour
 		if (!gameController.Play && Math.Abs (Vector3.Distance (leftHand.transform.position, rightHand.transform.position)) < 0.1f) {
 			//if ((leftCatch && rightHand.transform.position.x < gameController.headInitPos.x)
 			//	|| (rightCatch && leftHand.transform.position.x > gameController.headInitPos.x)) {
-			gameController.Play = true;            
+			gameController.Play = true;  
+			gameController.AddHit ();
 			leftCatch = rightCatch = false;
 			Destroy (gameObject);
 			//}

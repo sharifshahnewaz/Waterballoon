@@ -33,8 +33,10 @@ public class TriggerCalibrator : MonoBehaviour
 
 	void Gripped (object sender, ClickedEventArgs e)
 	{
-		if (!gameController.HeadCalibrated && gameController.isDebug) {
+		if (!isLeft && !gameController.HeadCalibrated && gameController.isDebug) {
 			gameController.CalibrateHead ();
+		} else if (isLeft) {
+			gameController.Play = true;
 		}
 	}
 }
