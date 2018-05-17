@@ -15,7 +15,6 @@ public class GameController : MonoBehaviour
 	public float spawnWait;
 	public float startWait;
 	public float waveWait;
-	public float scale = 1.0f;
 
 	Animation anim;
 
@@ -32,17 +31,11 @@ public class GameController : MonoBehaviour
 
 	public bool Play { get; set; }
 
-	public bool LeftCalibrated { get; set; }
-
-	public bool RightCalibrated { get; set; }
-
-	public bool HeadCalibrated { get; set; }
 
 	bool isThrowLeft;
 	int leftHit, leftMiss, rightHit, rightMiss;
 	float leftPercentage, rightPercentage;
 
-	public Vector3 headInitPos, leftHandInitPos, rightHandInitPos, leftHandPos, rightHandPos, headPos;
 	Vector3 target;
 
 	public int totalBall = 120;
@@ -50,7 +43,7 @@ public class GameController : MonoBehaviour
 	private string displayMessage = null;
 	private StringBuilder balanceDataRecorder;
 
-
+	private Calibrator calibrator;
 
 	public int sampleRate = 10;
 	public String studyCondition;
@@ -74,17 +67,11 @@ public class GameController : MonoBehaviour
 
 		displayMessage = "'P' to \nplay";
 
-		headInitPos = Vector3.zero;
-		leftHandInitPos = Vector3.zero;
-		rightHandInitPos = Vector3.zero;
-		leftHandPos = Vector3.zero;
-		rightHandPos = Vector3.zero;
-		headPos = Vector3.zero;
-
 		StartCoroutine (SpawnWaves ());
 		leftPercentage = 0.90f;
 		rightPercentage = 0.90f;
 
+		calibrator = GetComponent<Calibrator> ();
 		anim = GameObject.Find ("Jim").GetComponent<Animation> ();
 	}
 
@@ -104,21 +91,11 @@ public class GameController : MonoBehaviour
 
 		}
 
-		/*if (Input.GetKeyDown (KeyCode.L)) {
-			CalibrateLeft ();
-		}
-		if (Input.GetKeyDown (KeyCode.R)) {
-			CalibrateRight ();
-		}
-		if (Input.GetKeyDown (KeyCode.H)) {
-			CalibrateHead ();
-
-		}*/
-
 		if (Input.GetKeyDown (KeyCode.C)) {
-			CalibrateLeft ();
-			CalibrateRight ();
-			CalibrateHead ();
+			calibrator.CalibrateLeft ();
+			calibrator.CalibrateRight ();
+			calibrator.CalibrateHead ();
+			Play = true;
 		}
 
 		if (hit + miss >= totalBall) {
@@ -143,14 +120,14 @@ public class GameController : MonoBehaviour
 
 		while (true) {
 			for (int i = 0; i < hazardCount; i++) {
-				if (LeftCalibrated && RightCalibrated && HeadCalibrated && Play) {
+				if (calibrator.LeftCalibrated && calibrator.RightCalibrated && calibrator.HeadCalibrated && Play) {
 
 					if (isThrowLeft) {
-						target = leftHandPos;
+						target = calibrator.leftHandInitPos;
 						target.x = leftDistanceAdjustment ();
 						                        
 					} else {
-						target = rightHandPos;
+						target = calibrator.rightHandInitPos;
 						target.x = rightDistanceAdjustment ();						                        
 					}
 					spawnRotation = Quaternion.LookRotation (spawnPosition - target - new Vector3 (0, 0, 0.10f));
@@ -174,7 +151,7 @@ public class GameController : MonoBehaviour
 			leftHit = leftMiss = 0;
 			leftPercentage -= 0.1f;
 		}
-		return headInitPos.x - Vector3.Distance (headInitPos, leftHandPos) * leftPercentage;
+		return calibrator.headInitPos.x - Vector3.Distance (calibrator.headInitPos, calibrator.leftHandInitPos) * leftPercentage;
 	}
 
 	private float rightDistanceAdjustment ()
@@ -186,30 +163,7 @@ public class GameController : MonoBehaviour
 			rightHit = rightMiss = 0;
 			rightPercentage -= 0.1f;
 		}
-		return headInitPos.x + Vector3.Distance (rightHandPos, headInitPos) * rightPercentage;
-	}
-
-	public bool Calibrate (out Vector3 handInitPos, String tag, out Vector3 hanPos)
-	{
-		handInitPos = GameObject.FindWithTag (tag).transform.position;
-		hanPos = handInitPos;
-		Debug.Log (tag + " calibrated");
-		return true;
-	}
-
-	public void CalibrateLeft ()
-	{
-		LeftCalibrated = Calibrate (out leftHandInitPos, "LeftController", out leftHandPos);
-	}
-
-	public void CalibrateRight ()
-	{
-		RightCalibrated = Calibrate (out rightHandInitPos, "RightController", out rightHandPos);
-	}
-
-	public void CalibrateHead ()
-	{
-		HeadCalibrated = Calibrate (out headInitPos, "MainCamera", out headPos);
+		return calibrator.headInitPos.x + Vector3.Distance (calibrator.rightHandInitPos, calibrator.headInitPos) * rightPercentage;
 	}
 
 	public void AddHit ()

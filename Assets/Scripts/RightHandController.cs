@@ -6,15 +6,15 @@ public class RightHandController : MonoBehaviour
 {
 	GameObject rightController;
 	private float xPos, initX, currentX, maxX;
-	private GameController gameController;
+	private Calibrator calibrator;
 	// Use this for initialization
 	void Start ()
 	{
 		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
 		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameController> ();
+			calibrator = gameControllerObject.GetComponent<Calibrator> ();
 		}
-		if (gameController == null) {
+		if (calibrator == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
@@ -24,13 +24,12 @@ public class RightHandController : MonoBehaviour
 	{
 		rightController = GameObject.FindGameObjectWithTag ("RightController");
 		if (rightController != null) {
-			initX = gameController.rightHandInitPos.x;
+			initX = calibrator.rightHandInitPos.x;
 			currentX = rightController.transform.position.x;
-			if (gameController.HeadCalibrated && currentX > initX) {
-				xPos = initX + (currentX - initX) * gameController.scale;
+			if (calibrator.HeadCalibrated && currentX > initX) {
+				xPos = initX + (currentX - initX) * calibrator.scale;
 				if (currentX < maxX) {
 					maxX = currentX;
-					Debug.Log ("Right max "+maxX);
 				}
 			} else {
 				xPos = rightController.transform.position.x;

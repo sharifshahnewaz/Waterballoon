@@ -6,7 +6,7 @@ public class TriggerCalibrator : MonoBehaviour
 
 	public bool isLeft;
 	private SteamVR_TrackedController device;
-	private GameController gameController;
+	private Calibrator calibrator;
 
 	void Start ()
 	{
@@ -15,28 +15,26 @@ public class TriggerCalibrator : MonoBehaviour
 		device.Gripped += Gripped;
 		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
 		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameController> ();
+			calibrator = gameControllerObject.GetComponent<Calibrator> ();
 		}
-		if (gameController == null) {
+		if ( calibrator == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
 
 	void Trigger (object sender, ClickedEventArgs e)
 	{
-		if (isLeft && !gameController.LeftCalibrated && gameController.isDebug) {
-			gameController.CalibrateLeft ();
-		} else if (!isLeft && !gameController.RightCalibrated && gameController.isDebug) {
-			gameController.CalibrateRight ();
+		if (isLeft && !calibrator.LeftCalibrated) {
+			calibrator.CalibrateLeft ();
+		} else if (!isLeft && !calibrator.RightCalibrated) {
+			calibrator.CalibrateRight ();
 		}
 	}
 
 	void Gripped (object sender, ClickedEventArgs e)
 	{
-		if (!isLeft && !gameController.HeadCalibrated && gameController.isDebug) {
-			gameController.CalibrateHead ();
-		} else if (isLeft) {
-			gameController.Play = true;
-		}
+		if (!calibrator.HeadCalibrated) {
+			calibrator.CalibrateHead ();
+		} 
 	}
 }

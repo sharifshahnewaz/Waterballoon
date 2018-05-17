@@ -9,16 +9,17 @@ public class ReachRecorder : MonoBehaviour
 	float leftInt, rightInt, leftCurrent, rightCurrent, leftMax, rightMax;
 	bool recording = false;
 	GameObject leftController, rightController;
-	private GameController gameController;
+
+	private Calibrator calibrator;
 	StringBuilder sb;
 
 	void Start ()
 	{
 		GameObject gameControllerObject = GameObject.FindWithTag ("GameController");
 		if (gameControllerObject != null) {
-			gameController = gameControllerObject.GetComponent<GameController> ();
+			calibrator = gameControllerObject.GetComponent<Calibrator> ();
 		}
-		if (gameController == null) {
+		if (calibrator == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
@@ -26,15 +27,17 @@ public class ReachRecorder : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
 	{		
-		if (Input.GetKeyDown (KeyCode.R)) {
-			if (gameController.LeftCalibrated && gameController.RightCalibrated && gameController.HeadCalibrated) {
-				this.leftInt = gameController.leftHandInitPos.x;
-				this.rightInt = gameController.rightHandInitPos.x;
+		
+		if (calibrator.LeftCalibrated && calibrator.RightCalibrated && calibrator.HeadCalibrated) {
+			this.leftInt = calibrator.leftHandInitPos.x;
+			this.rightInt = calibrator.rightHandInitPos.x;
+			//if (Input.GetKeyDown (KeyCode.R)) {
 				recording = true;
-			}
+			//}
 		}
 
 		if (recording) {
+			Debug.Log ("Reach recording started");
 			leftController = GameObject.FindGameObjectWithTag ("LeftController");
 			if (leftController != null) {
 				leftCurrent = leftController.transform.position.x;
@@ -52,11 +55,13 @@ public class ReachRecorder : MonoBehaviour
 			}
 		}
 
-		/*if (Input.GetKeyDown (KeyCode.W)) {
-			WriteInFile ();
-		}*/
+		if (Input.GetKeyDown (KeyCode.C)) {
+			calibrator.CalibrateLeft ();
+			calibrator.CalibrateRight ();
+			calibrator.CalibrateHead ();
+		}
 	}
-		
+
 	void OnApplicationQuit ()
 	{
 		recording = false;
