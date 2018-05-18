@@ -52,7 +52,6 @@
      <Compile Include="Assets\Scripts\DestroyByContact.cs" />
      <Compile Include="Assets\Scripts\DestroyByTime.cs" />
      <Compile Include="Assets\Scripts\DisableOnStart.cs" />
-     <Compile Include="Assets\Scripts\Drawlines.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\GameDataRecorder.cs" />
      <Compile Include="Assets\Scripts\LeftHandController.cs" />

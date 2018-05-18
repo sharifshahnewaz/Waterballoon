@@ -19,13 +19,6 @@ public class GameController : MonoBehaviour
 	Animation anim;
 
 	private GameObject head;
-
-
-	//public GUIText scoreText;
-	//public GUIText restartText;
-	//public GUIText gameOverText;
-
-
 	private int hit;
 	private int miss;
 
@@ -38,7 +31,7 @@ public class GameController : MonoBehaviour
 
 	Vector3 target;
 
-	public int totalBall = 120;
+	public int totalBall = 50;
 
 	private string displayMessage = null;
 	private StringBuilder balanceDataRecorder;
@@ -52,9 +45,12 @@ public class GameController : MonoBehaviour
 	public GameObject missText;
 	public GameObject messageText;
 
+	AudioSource ballShooting;
+	GameDataRecorder dataRecorder;
+
 	void Start ()
 	{
-		Play = false;
+		Play = true;
 
 		hit = 0;
 		miss = 0;
@@ -65,42 +61,44 @@ public class GameController : MonoBehaviour
 			Debug.Log ("Cannot find 'Head' of the avatar");
 		}
 
-		displayMessage = "'P' to \nplay";
+		displayMessage = "";
 
 		StartCoroutine (SpawnWaves ());
 		leftPercentage = 0.90f;
 		rightPercentage = 0.90f;
 
 		calibrator = GetComponent<Calibrator> ();
+		dataRecorder = GetComponent<GameDataRecorder> ();
 		anim = GameObject.Find ("Jim").GetComponent<Animation> ();
+		ballShooting = GameObject.Find ("BallShooting").GetComponent<AudioSource> ();
 	}
 
 	void Update ()
 	{
 
-		if (Input.GetKeyDown (KeyCode.P)) {
+		/*if (Input.GetKeyDown (KeyCode.P)) {
 			if (Play) {
 				Play = false;
-				displayMessage = "'P' to \nplay";
+				displayMessage = "'P' to play";
 				Debug.Log ("Play stopped");
 			} else {
 				Play = true;
-				displayMessage = "'P' to \nstop";
+				displayMessage = "'P' to stop";
 				Debug.Log ("Play started");
 			}
 
 		}
-
+*/
 		if (Input.GetKeyDown (KeyCode.C)) {
 			calibrator.CalibrateLeft ();
 			calibrator.CalibrateRight ();
 			calibrator.CalibrateHead ();
-			Play = true;
 		}
+
 
 		if (hit + miss >= totalBall) {
 			Play = false;
-			displayMessage = "Game\nOver";
+			displayMessage = "Game Over";
 		}
 			
 		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit + " R: (" + rightPercentage + ")";
@@ -134,6 +132,7 @@ public class GameController : MonoBehaviour
 					anim.Play ();
 					yield return new WaitForSeconds (0.8f);
 					Instantiate (tennisball, spawnPosition, spawnRotation);
+					ballShooting.Play ();
 					isThrowLeft = !isThrowLeft;
 				}
 				yield return new WaitForSeconds (spawnWait);
@@ -175,6 +174,7 @@ public class GameController : MonoBehaviour
 		else
 			leftHit++;
 
+		dataRecorder.record (hit + miss, isThrowLeft ? "right" : "left", isThrowLeft ? rightPercentage : leftPercentage, target, "Hit");
 	}
 
 	public void AddMiss ()
@@ -184,11 +184,8 @@ public class GameController : MonoBehaviour
 			rightMiss++;
 		else
 			leftMiss++;
+
+		dataRecorder.record (hit + miss, isThrowLeft ? "right" : "left", isThrowLeft ? rightPercentage : leftPercentage, target, "Miss");
 	}
 
-
-	void OnApplicationQuit ()
-	{
-		long fileId = System.DateTime.Now.Ticks;
-	}
 }

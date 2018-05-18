@@ -33,10 +33,7 @@ public class DestroyByContact : MonoBehaviour
 		//Debug.Log ( other.tag );
 		if (other.tag == "Boundary") {
 			gameController.AddMiss ();
-			AudioSource ballShooting = GameObject.Find ("BallShooting").GetComponent<AudioSource> ();
-			// ballShooting.pitch = 0.6f;
-			// ballShooting.volume = 0.03f;
-			ballShooting.Play ();
+
 			Destroy (gameObject);
 			//return;
 		} else if (other.tag == "LeftHand") {
