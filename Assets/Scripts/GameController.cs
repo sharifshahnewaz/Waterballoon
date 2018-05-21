@@ -174,7 +174,7 @@ public class GameController : MonoBehaviour
 		else
 			leftHit++;
 
-		dataRecorder.record (hit + miss, isThrowLeft ? "right" : "left", isThrowLeft ? rightPercentage : leftPercentage, target, "Hit");
+		dataRecorder.record (hit + miss, isThrowLeft ? "Right" : "Left", isThrowLeft ? rightPercentage : leftPercentage, target, "Hit");
 	}
 
 	public void AddMiss ()
@@ -185,7 +185,7 @@ public class GameController : MonoBehaviour
 		else
 			leftMiss++;
 
-		dataRecorder.record (hit + miss, isThrowLeft ? "right" : "left", isThrowLeft ? rightPercentage : leftPercentage, target, "Miss");
+		dataRecorder.record (hit + miss, isThrowLeft ? "Right" : "Left", isThrowLeft ? rightPercentage : leftPercentage, target, "Miss");
 	}
 
 }

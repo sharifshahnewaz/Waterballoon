@@ -11,7 +11,11 @@ public class DestroyByContact : MonoBehaviour
 	private GameObject leftHand;
 	private GameObject rightHand;
 	bool leftCatch, rightCatch;
+	AudioSource splash;
+	AudioSource hit;
 
+	SteamVR_TrackedObject leftController;
+	SteamVR_TrackedObject rightController;
 
 	void Start ()
 	{
@@ -23,6 +27,10 @@ public class DestroyByContact : MonoBehaviour
 		if (gameController == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
+
+		splash = GameObject.Find ("Splash").GetComponent<AudioSource> ();
+		hit = GameObject.Find ("BalloonHit").GetComponent<AudioSource> ();
+
 		leftHand = GameObject.FindGameObjectWithTag ("LeftHand");
 		rightHand = GameObject.FindGameObjectWithTag ("RightHand");
 		leftCatch = rightCatch = false;
@@ -30,6 +38,8 @@ public class DestroyByContact : MonoBehaviour
 
 	void OnTriggerEnter (Collider other)
 	{
+		leftController = GameObject.FindWithTag ("LeftController").GetComponent<SteamVR_TrackedObject>();
+		rightController = GameObject.FindWithTag ("RightController").GetComponent<SteamVR_TrackedObject>();
 		//Debug.Log ( other.tag );
 		if (other.tag == "Boundary") {
 			gameController.AddMiss ();
@@ -38,10 +48,13 @@ public class DestroyByContact : MonoBehaviour
 			//return;
 		} else if (other.tag == "LeftHand") {
 			leftCatch = true;
+			SteamVR_Controller.Input ((int)leftController.index).TriggerHapticPulse (3000);
 		} else if (other.tag == "RightHand") {
 			rightCatch = true;
+			SteamVR_Controller.Input ((int)rightController.index).TriggerHapticPulse (3000);
 		}
 		if (leftCatch || rightCatch) {
+			hit.Play ();
 			gameController.Play = false;
 			GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
@@ -62,6 +75,7 @@ public class DestroyByContact : MonoBehaviour
 			gameController.Play = true;  
 			gameController.AddHit ();
 			leftCatch = rightCatch = false;
+			splash.Play ();
 			Destroy (gameObject);
 			//}
 		}
