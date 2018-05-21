@@ -17,23 +17,23 @@ public class TriggerCalibrator : MonoBehaviour
 		if (gameControllerObject != null) {
 			calibrator = gameControllerObject.GetComponent<Calibrator> ();
 		}
-		if ( calibrator == null) {
+		if (calibrator == null) {
 			Debug.Log ("Cannot find 'GameController' script");
 		}
 	}
 
 	void Trigger (object sender, ClickedEventArgs e)
 	{
-		if (isLeft && !calibrator.LeftCalibrated) {
+		if (isLeft && !calibrator.LeftCalibrated && calibrator.isDebug) {
 			calibrator.CalibrateLeft ();
-		} else if (!isLeft && !calibrator.RightCalibrated) {
+		} else if (!isLeft && !calibrator.RightCalibrated && calibrator.isDebug) {
 			calibrator.CalibrateRight ();
 		}
 	}
 
 	void Gripped (object sender, ClickedEventArgs e)
 	{
-		if (!calibrator.HeadCalibrated) {
+		if (!calibrator.HeadCalibrated && calibrator.isDebug) {
 			calibrator.CalibrateHead ();
 		} 
 	}

@@ -13,6 +13,8 @@ public class GameDataRecorder : MonoBehaviour
 	float rightMax = -100.0f;
 	float leftMax = 100.0f;
 
+	float startTime;
+
 	Calibrator calibrator;
 
 	void Start ()
@@ -21,9 +23,14 @@ public class GameDataRecorder : MonoBehaviour
 		gameInfo.Append ("Ball No, Direction, Percentage, OriginalX, ScaledX, ScaledY, ScaledZ, Status\n");
 
 		calibrationData = new StringBuilder ();
-		calibrationData.Append ("Left Int X, Head Int X, Right Int X, Left Int Y, Head Int Y, Right Int Y, Left Int Z, Head Int Z, Right Int Z\n");
+		calibrationData.Append ("Left Max, Right Max, Left Reach, Right Reach, Left Int X, Head Int X, Right Int X, Left Int Y, Head Int Y, Right Int Y, Left Int Z, Head Int Z, Right Int Z, Time\n");
 
 		calibrator = GetComponent<Calibrator> ();
+	}
+
+	public void recordStartTime (float time)
+	{
+		startTime = time;
 	}
 
 	public void record (int ballNo, string direction, float percentage, Vector3 target, string status)
@@ -39,7 +46,7 @@ public class GameDataRecorder : MonoBehaviour
 					}
 				} else {
 					originalX = calibrator.leftHandInitPos.x - (calibrator.leftHandInitPos.x - target.x) / calibrator.scale;
-					if (leftMax> originalX) {
+					if (leftMax > originalX) {
 						leftMax = originalX;
 					}
 				}
@@ -67,10 +74,11 @@ public class GameDataRecorder : MonoBehaviour
 		System.IO.File.AppendAllText ("Data/" + studyCondition + "-game-" + fileId + ".csv", gameInfo.ToString ());
 		Debug.Log (studyCondition + "-game data is written");
 
-		calibrationData.Append (
-			calibrator.leftHandInitPos.x + ", " + calibrator.headInitPos.x + ", " + calibrator.rightHandInitPos.x + ", " +
-			calibrator.leftHandInitPos.y + ", " + calibrator.headInitPos.y + ", " + calibrator.rightHandInitPos.y + ", " +
-			calibrator.leftHandInitPos.z + ", " + calibrator.headInitPos.z + ", " + calibrator.rightHandInitPos.z + "\n");
+		calibrationData.Append (leftMax + ", " + rightMax + ", " + (calibrator.leftHandInitPos.x - leftMax) + ", " + (rightMax - calibrator.rightHandInitPos.x) + ", " +
+		calibrator.leftHandInitPos.x + ", " + calibrator.headInitPos.x + ", " + calibrator.rightHandInitPos.x + ", " +
+		calibrator.leftHandInitPos.y + ", " + calibrator.headInitPos.y + ", " + calibrator.rightHandInitPos.y + ", " +
+		calibrator.leftHandInitPos.z + ", " + calibrator.headInitPos.z + ", " + calibrator.rightHandInitPos.z + ", " +
+		(Time.realtimeSinceStartup - startTime) + "\n");
 			
 		System.IO.File.AppendAllText ("Data/" + studyCondition + "-calibration-" + fileId + ".csv", calibrationData.ToString ());
 		Debug.Log (studyCondition + "-calibration data is written");

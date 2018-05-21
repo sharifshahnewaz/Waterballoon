@@ -54,7 +54,7 @@ public class DestroyByContact : MonoBehaviour
 			SteamVR_Controller.Input ((int)rightController.index).TriggerHapticPulse (3000);
 		}
 		if (leftCatch || rightCatch) {
-			hit.Play ();
+			//hit.Play ();
 			gameController.Play = false;
 			GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;

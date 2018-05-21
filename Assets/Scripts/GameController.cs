@@ -8,7 +8,6 @@ using System.Net;
 
 public class GameController : MonoBehaviour
 {
-	public bool isDebug = false;
 	public GameObject tennisball;
 
 	public int hazardCount;
@@ -93,6 +92,7 @@ public class GameController : MonoBehaviour
 			calibrator.CalibrateLeft ();
 			calibrator.CalibrateRight ();
 			calibrator.CalibrateHead ();
+			dataRecorder.recordStartTime (Time.realtimeSinceStartup);
 		}
 
 

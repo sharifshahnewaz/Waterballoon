@@ -32,12 +32,13 @@ public class ReachRecorder : MonoBehaviour
 			this.leftInt = calibrator.leftHandInitPos.x;
 			this.rightInt = calibrator.rightHandInitPos.x;
 			//if (Input.GetKeyDown (KeyCode.R)) {
-				recording = true;
+			recording = true;
+			//Debug.Log ("Reach recording started");
 			//}
 		}
 
 		if (recording) {
-			Debug.Log ("Reach recording started");
+			
 			leftController = GameObject.FindGameObjectWithTag ("LeftController");
 			if (leftController != null) {
 				leftCurrent = leftController.transform.position.x;

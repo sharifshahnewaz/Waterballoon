@@ -15,6 +15,8 @@ public class Calibrator : MonoBehaviour
 
 	public float scale =1.0f;
 
+	public bool isDebug = false;
+
 	public bool Calibrate (out Vector3 handInitPos, string tag)
 	{
 		handInitPos = GameObject.FindWithTag (tag).transform.position;
