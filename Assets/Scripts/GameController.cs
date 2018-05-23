@@ -63,8 +63,8 @@ public class GameController : MonoBehaviour
 		displayMessage = "";
 
 		StartCoroutine (SpawnWaves ());
-		leftPercentage = 0.90f;
-		rightPercentage = 0.90f;
+		leftPercentage = 1.0f;
+		rightPercentage = 1.0f;
 
 		calibrator = GetComponent<Calibrator> ();
 		dataRecorder = GetComponent<GameDataRecorder> ();
@@ -101,7 +101,7 @@ public class GameController : MonoBehaviour
 			displayMessage = "Game Over";
 		}
 			
-		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit + " R: (" + rightPercentage + ")";
+		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit+ " R: (" + rightPercentage + ")";
 		missText.GetComponent<TextMesh> ().text = "Missed: " + miss + " L: (" + leftPercentage + ")";
 		messageText.GetComponent<TextMesh> ().text = displayMessage;
 
@@ -145,24 +145,24 @@ public class GameController : MonoBehaviour
 	{
 		if (leftHit >= 2) {
 			leftHit = leftMiss = 0;
-			leftPercentage += 0.1f;
+			leftPercentage += 0.1f / leftPercentage;
 		} else if (leftMiss >= 2 && leftPercentage > 0.9f) {
 			leftHit = leftMiss = 0;
-			leftPercentage -= 0.1f;
+			leftPercentage -= 0.05f / leftPercentage;
 		}
-		return calibrator.headInitPos.x - Vector3.Distance (calibrator.headInitPos, calibrator.leftHandInitPos) * leftPercentage;
+		return calibrator.headInitPos.x - (calibrator.headInitPos.x - calibrator.leftHandInitPos.x) * leftPercentage;
 	}
 
 	private float rightDistanceAdjustment ()
 	{
 		if (rightHit >= 2) {
 			rightHit = rightMiss = 0;
-			rightPercentage += 0.1f;
+			rightPercentage += 0.1f / rightPercentage;
 		} else if (rightMiss >= 2 && rightPercentage > 0.9f) {
 			rightHit = rightMiss = 0;
-			rightPercentage -= 0.1f;
+			rightPercentage -= 0.05f / rightPercentage;
 		}
-		return calibrator.headInitPos.x + Vector3.Distance (calibrator.rightHandInitPos, calibrator.headInitPos) * rightPercentage;
+		return calibrator.headInitPos.x + (calibrator.rightHandInitPos.x - calibrator.headInitPos.x) * rightPercentage;
 	}
 
 	public void AddHit ()

@@ -59,7 +59,6 @@ public class DestroyByContact : MonoBehaviour
 			GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
 			gameObject.transform.position = other.gameObject.transform.position;
-
 		}
 	}
 

@@ -263,7 +263,7 @@ public class SteamVR_RenderModel : MonoBehaviour
 
 		bool success = SetModel(renderModelName);
 		SteamVR_Utils.Event.Send("render_model_loaded", this, success);
-		SteamVR_Utils.Event.Send("hide_render_models", true);
+		SteamVR_Utils.Event.Send("hide_render_models", true); // Sharif modified to hide the controller mesh
 	}
 
 	private bool SetModel(string renderModelName)
