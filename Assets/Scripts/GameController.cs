@@ -101,8 +101,8 @@ public class GameController : MonoBehaviour
 			displayMessage = "Game Over";
 		}
 			
-		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit+ " R: (" + rightPercentage + ")";
-		missText.GetComponent<TextMesh> ().text = "Missed: " + miss + " L: (" + leftPercentage + ")";
+		hitText.GetComponent<TextMesh> ().text = "Smashed: " + hit + "\n◄ " + Mathf.Round (leftPercentage * 100) + "%";
+		missText.GetComponent<TextMesh> ().text = "Missed: " + miss + "\n" + Mathf.Round (rightPercentage * 100) + "% ►";
 		messageText.GetComponent<TextMesh> ().text = displayMessage;
 
 	}
